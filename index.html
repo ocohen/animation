@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="shape.js"></script>
+<script type="text/javascript" src="renderer.js"></script>
+<title>IK Solver</title>
+</head>
+<body>
+<canvas id="canvas" width="1000px" height="500px" /> 
+<script type="text/javascript">
+var renderer;
+function init()
+{
+    var canvas = document.getElementById("canvas");
+    renderer = new Renderer(canvas);
+    renderer.shapes.push(new Shape(110,110,150,30));
+    renderer.shapes.push(new Shape(210,210,50,10));
+    setInterval(tick, 1000.0/60);
+}
+
+function render(canvas)
+{
+    var context = canvas.getContext("2d");
+    context.clearRect(0,0,canvas.width, canvas.height);
+    context.fillStyle = "#cccccc";
+    context.fillRect(0,0, canvas.width, canvas.height);
+}
+
+function tick()
+{
+    //render(canvas);
+    renderer.Update();
+}
+
+init();
+</script>
+
+
+</body>
+</html>
