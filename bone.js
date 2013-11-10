@@ -7,27 +7,27 @@ Bone.prototype.SetRotation = function(rotation)
     var ht = this.joint.y - this.y;
     var hb = this.height + this.y - this.joint.y;
 
-    var lX = this.x + Math.cos(rotation + Math.PI) * wl;
-    var lY = this.y - Math.sin(rotation + Math.PI) * wl;
-    var rX = this.x + Math.cos(rotation) * wr;
-    var rY = this.y - Math.sin(rotation) * wr;
+    var lX = this.joint.x + Math.cos(rotation + Math.PI) * wl;
+    var lY = this.joint.y - Math.sin(rotation + Math.PI) * wl;
+    var rX = this.joint.x + Math.cos(rotation) * wr;
+    var rY = this.joint.y - Math.sin(rotation) * wr;
 
-    var tX = this.x + Math.cos(rotation+Math.PI/2) * ht
-    var tY = this.y - Math.sin(rotation+Math.PI/2) * ht;
-    var bX = this.x + Math.cos(rotation+3*Math.PI/2) * hb;
-    var bY = this.y - Math.sin(rotation+3*Math.PI/2) * hb; 
+    var tX = this.joint.x + Math.cos(rotation+Math.PI/2) * ht
+    var tY = this.joint.y - Math.sin(rotation+Math.PI/2) * ht;
+    var bX = this.joint.x + Math.cos(rotation+3*Math.PI/2) * hb;
+    var bY = this.joint.y - Math.sin(rotation+3*Math.PI/2) * hb; 
 
-    this.tlX = lX + tX - this.x;
-    this.tlY = lY + tY - this.y;
+    this.tlX = lX + tX - this.joint.x;
+    this.tlY = lY + tY - this.joint.y;
 
-    this.trX = rX + tX - this.x;
-    this.trY = rY + tY - this.y;
+    this.trX = rX + tX - this.joint.x;
+    this.trY = rY + tY - this.joint.y;
 
-    this.blX = lX + bX - this.x;
-    this.blY = lY + bY - this.y;
+    this.blX = lX + bX - this.joint.x;
+    this.blY = lY + bY - this.joint.y;
 
-    this.brX = rX + bX - this.x;
-    this.brY = rY + bY - this.y;
+    this.brX = rX + bX - this.joint.x;
+    this.brY = rY + bY - this.joint.y;
 
 }
 
@@ -44,8 +44,7 @@ function Bone(x, y, width, height)
 
 Bone.prototype.Draw = function(context)
 {
-    this.SetRotation(this.rotation + 0.01);
-
+    //bone
     context.beginPath();
     context.strokeStyle= "#000000";
     context.moveTo(this.tlX, this.tlY);
@@ -53,5 +52,12 @@ Bone.prototype.Draw = function(context)
     context.lineTo(this.brX, this.brY);
     context.lineTo(this.blX, this.blY);
     context.lineTo(this.tlX,this.tlY);
-    context.stroke()
+    context.stroke();
+    context.beginPath();
+
+    //joint
+    context.arc(this.joint.x, this.joint.y, 5, 0, 2*Math.PI, false);
+    context.fillStyle = "#eeaaee";
+    context.fill();
+    context.stroke();
 }
