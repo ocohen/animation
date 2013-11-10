@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="shape.js"></script>
+<script type="text/javascript" src="joint.js"></script>
+<script type="text/javascript" src="bone.js"></script>
 <script type="text/javascript" src="renderer.js"></script>
 <title>IK Solver</title>
 </head>
@@ -13,8 +14,8 @@ function init()
 {
     var canvas = document.getElementById("canvas");
     renderer = new Renderer(canvas);
-    renderer.shapes.push(new Shape(110,110,150,30));
-    renderer.shapes.push(new Shape(210,210,50,10));
+    renderer.shapes.push(new Bone(110,110,150,30));
+    renderer.shapes.push(new Bone(210,210,50,10));
     setInterval(tick, 1000.0/60);
 }
 
