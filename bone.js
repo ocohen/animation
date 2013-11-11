@@ -29,18 +29,42 @@ Bone.prototype.SetRotation = function(rotation)
     this.brX = rX + bX - this.joint.x;
     this.brY = rY + bY - this.joint.y;
 
+    for(var i=0; i<this.children.length; i++)
+    {
+        this.children[i].SetRotation(this.joint.x, this.joint.y, rotation);
+    }
+
 }
 
-function Bone(x, y, width, height)
+function Bone(x, y, width, height, joint)
 {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.joint = new Joint(x+width/2,y+height/2);
+    this.joint = joint;
+    this.children = [];
     this.SetRotation(0);
 }
 
+function RootBone(x,y,width,height)
+{
+    var joint = new Joint(x,y,x,y);
+    var bone = new Bone(x,y,width,height,joint);
+    joint.bone = bone;
+
+    return bone;
+}
+
+Bone.prototype.AddBone = function(x,y,width,height)
+{
+    var joint = new Joint(x,y,this.joint.x, this.joint.y);
+    var bone = new Bone(x,y,width,height, joint);
+    joint.bone = bone;
+    this.children.push(joint);
+
+    return bone;
+}
 
 Bone.prototype.Draw = function(context)
 {
@@ -53,11 +77,12 @@ Bone.prototype.Draw = function(context)
     context.lineTo(this.blX, this.blY);
     context.lineTo(this.tlX,this.tlY);
     context.stroke();
-    context.beginPath();
 
-    //joint
-    context.arc(this.joint.x, this.joint.y, 5, 0, 2*Math.PI, false);
-    context.fillStyle = "#eeaaee";
-    context.fill();
-    context.stroke();
+    this.joint.Draw(context);
+
+    //children
+    for(var i=0; i<this.children.length; i++)
+    {
+        this.children[i].Draw(context);
+    }
 }

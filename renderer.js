@@ -26,3 +26,8 @@ Renderer.prototype.Update = function()
     Clear(this.canvas);
     Draw(context, this.shapes);
 }
+
+Renderer.prototype.AddShape = function(s)
+{
+    this.shapes.push(s);
+}

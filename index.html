@@ -10,23 +10,30 @@
 <canvas id="canvas" width="1000px" height="500px" /> 
 <script type="text/javascript">
 var renderer;
+var roots = [];
+var bones = [];
 function init()
 {
     var canvas = document.getElementById("canvas");
     renderer = new Renderer(canvas);
-    renderer.shapes.push(new Bone(110,110,150,30));
-    renderer.shapes.push(new Bone(310,210,50,10));
-    renderer.shapes.push(new Bone(410,210,50,50));
+    var root = RootBone(100,100,20,50);
+    roots.push(root);
+    bones.push(root);
+    var child = root.AddBone(110, 145, 10, 50);
+    bones.push(child);
+    renderer.AddShape(root);
+    renderer.AddShape(child);
     setInterval(tick, 1000.0/60);
 }
 
 function tick()
 {
-    for(var i=0; i<renderer.shapes.length; i++)
+    roots[0].x += 0.1;
+    roots[0].SetRotation(roots[0].rotation + 0.01);
+    /*for(var i=1; i<bones.length; i++)
     {
-        renderer.shapes[i].SetRotation(renderer.shapes[i].rotation + 0.01);
-    }
-
+        bones[i].SetRotation(0.1);
+    }*/
     renderer.Update();
 }
 
