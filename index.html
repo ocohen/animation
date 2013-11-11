@@ -21,19 +21,23 @@ function init()
     bones.push(root);
     var child = root.AddBone(110, 145, 10, 50);
     bones.push(child);
+    var child2 = child.AddBone(115, 195, 5, 50);
+    bones.push(child2);
+    var child3 = child2.AddBone(117.5, 245, 50, 5);
+    bones.push(child3);
     renderer.AddShape(root);
     renderer.AddShape(child);
+    renderer.AddShape(child2);
+    renderer.AddShape(child3);
     setInterval(tick, 1000.0/60);
 }
 
 function tick()
 {
-    roots[0].x += 0.1;
-    roots[0].SetRotation(roots[0].rotation + 0.01);
-    /*for(var i=1; i<bones.length; i++)
+    for(var i=0; i<bones.length; i++)
     {
-        bones[i].SetRotation(0.1);
-    }*/
+        bones[i].SetRotationLocal(bones[i].rotation + 0.01);
+    }
     renderer.Update();
 }
 

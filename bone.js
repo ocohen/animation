@@ -1,7 +1,5 @@
 Bone.prototype.SetRotation = function(rotation)
 {
-    this.rotation = rotation;
-
     var wl = this.joint.x - this.x;
     var wr = this.width + this.x - this.joint.x;
     var ht = this.joint.y - this.y;
@@ -31,26 +29,41 @@ Bone.prototype.SetRotation = function(rotation)
 
     for(var i=0; i<this.children.length; i++)
     {
-        this.children[i].SetRotation(this.joint.x, this.joint.y, rotation);
+        this.children[i].SetRotationGlobal(this.joint.x, this.joint.y, rotation);
     }
 
 }
 
-function Bone(x, y, width, height, joint)
+Bone.prototype.SetRotationGlobal = function(rotation)
+{
+    this.gRotation = rotation;
+    this.SetRotation(this.gRotation + this.rotation);
+}
+
+Bone.prototype.SetRotationLocal = function(rotation)
+{
+    this.rotation = rotation;
+    this.SetRotation(this.gRotation + this.rotation);
+}
+
+function Bone(x, y, width, height, joint, pX,pY)
 {
     this.x = x;
     this.y = y;
+    this.len = Math.sqrt((this.x - pX) * (this.x-pX) + (this.y - pY)*(this.y-pY));
     this.width = width;
     this.height = height;
     this.joint = joint;
     this.children = [];
+    this.rotation = 0;
+    this.gRotation = 0;
     this.SetRotation(0);
 }
 
 function RootBone(x,y,width,height)
 {
     var joint = new Joint(x,y,x,y);
-    var bone = new Bone(x,y,width,height,joint);
+    var bone = new Bone(x,y,width,height,joint,x,y);
     joint.bone = bone;
 
     return bone;
@@ -59,7 +72,7 @@ function RootBone(x,y,width,height)
 Bone.prototype.AddBone = function(x,y,width,height)
 {
     var joint = new Joint(x,y,this.joint.x, this.joint.y);
-    var bone = new Bone(x,y,width,height, joint);
+    var bone = new Bone(x,y,width,height, joint,this.x,this.y);
     joint.bone = bone;
     this.children.push(joint);
 
