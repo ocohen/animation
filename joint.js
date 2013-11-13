@@ -1,31 +1,32 @@
-function Joint(x,y,pX, pY)
+function Joint(tr)
 {
-    this.x = x;
-    this.y = y;
-    this.rotation = Math.atan2(pY-y,x-pX);
-    this.len = Math.sqrt((x-pX)*(x-pX) + (y-pY)*(y-pY));
+    this.tr = tr;
+    this.children = [];
 }
 
-Joint.prototype.SetRotationGlobal = function(x,y,rotation)
+Joint.prototype.AddChild = function(child)
 {
-    var oldX = this.x;
-    var oldY = this.y;
-    this.x = x + this.len * Math.cos(this.rotation + rotation);
-    this.y = y - this.len * Math.sin(this.rotation + rotation);
-
-    var dX = this.x - oldX;
-    var dY = this.y - oldY;
-
-    this.bone.x += dX;
-    this.bone.y += dY;
-    this.bone.SetRotationGlobal(rotation);
+    this.children.push(child);
 }
 
-Joint.prototype.Draw = function(context)
+Joint.prototype.Rotate = function(theta)
 {
+    var tr = MakeTransform(0,0,theta);
+    this.tr = this.tr.MatrixMultiply(tr);
+}
+
+Joint.prototype.Draw = function(context, tr)
+{
+    var newTr = tr.MatrixMultiply(this.tr);
+    var pt = newTr.Transform(new Point2(0,0));
     context.beginPath();
-    context.arc(this.x, this.y, 5, 0, 2*Math.PI, false);
+    context.arc(pt.x, pt.y, 5, 0, 2*Math.PI, false);
     context.fillStyle = "#eeaaee";
     context.fill();
     context.stroke();
+    
+    for(var i=0; i<this.children.length; i++)
+    {
+        this.children[i].Draw(context, newTr);
+    }
 }

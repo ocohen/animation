@@ -11,34 +11,54 @@
 <canvas id="canvas" width="1000px" height="500px" /> 
 <script type="text/javascript">
 var renderer;
-var roots = [];
-var bones = [];
+var joints = [];
 function init()
 {
     var canvas = document.getElementById("canvas");
     renderer = new Renderer(canvas);
-    var root = RootBone(100,100,20,50);
-    roots.push(root);
-    bones.push(root);
-    var child = root.AddBone(110, 145, 10, 50);
-    bones.push(child);
-    var child2 = child.AddBone(115, 195, 5, 50);
-    bones.push(child2);
-    var child3 = child2.AddBone(117.5, 245, 50, 5);
-    bones.push(child3);
+    var root = new Joint(MakeTransform(400,300,Math.PI/3));
+    var b1 = new Bone(100, 50, MakeTransform(-10,-25,0));
+
+    var j = new Joint(MakeTransform(70,10,Math.PI/3));
+    var j2 = new Joint(MakeTransform(130,0,0));
+
+    var b2 = new Bone(40,40, MakeTransform(-20,-20,0));
+
+    var j3 = new Joint(MakeTransform(40, -15, -0.5));
+    var j4 = new Joint(MakeTransform(40, 0, 0));
+    var j5 = new Joint(MakeTransform(40, 15, 0.5));
+
+    var b3 = new Bone(30, 15, MakeTransform( -7.5, -7.5, 0));
+
+    root.AddChild(j);
+    root.AddChild(b1);
+
+    j.AddChild(b1);
+    j.AddChild(j2);
+
+    j2.AddChild(b2);
+    j2.AddChild(j3);
+    j2.AddChild(j4);
+    j2.AddChild(j5);
+
+    j3.AddChild(b3);
+    j4.AddChild(b3);
+    j5.AddChild(b3);
+
     renderer.AddShape(root);
-    renderer.AddShape(child);
-    renderer.AddShape(child2);
-    renderer.AddShape(child3);
+
+
+    joints.push(root);
+    joints.push(j);
+    joints.push(j2);
+
     setInterval(tick, 1000.0/60);
 }
 
 function tick()
 {
-    for(var i=0; i<bones.length; i++)
-    {
-        bones[i].SetRotationLocal(bones[i].rotation + 0.01);
-    }
+    joints[0].Rotate(0.01);
+    joints[2].Rotate(-0.05);
     renderer.Update();
 }
 

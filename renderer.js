@@ -14,9 +14,10 @@ function Clear(canvas)
 
 function Draw(context, shapes)
 {
+    var tr = MakeTransform(0,0,0);
     for(var i=0; i<shapes.length; i++)
     {
-        shapes[i].Draw(context);
+        shapes[i].Draw(context, tr);
     }
 }
 

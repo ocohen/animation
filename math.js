@@ -15,7 +15,7 @@ function Matrix33(data)
     this.data = data;
 }
 
-function Transform(x,y,angle)
+function MakeTransform(x,y,angle)
 {
     var c = Math.cos(angle);
     var s = Math.sin(angle);
@@ -27,7 +27,7 @@ function Transform(x,y,angle)
 }
 
 
-Matrix.prototype.MatrixMultiply= function(tr)
+Matrix33.prototype.MatrixMultiply= function(tr)
 {
     var out = [0,0,0, 0,0,0, 0,0,0];
     for(var i=0; i<3; i++)
