@@ -5,6 +5,21 @@ function Vector3(x,y,w)
     this.w = w;
 }
 
+Vector3.prototype.Minus = function(v)
+{
+
+    return new Vector3(this.x - v.x, this.y - v.y, this.w - v.w);
+}
+
+Vector3.prototype.Cross = function(v)
+{
+    var i = this.y*v.w - this.w * v.y;
+    var j = this.w*v.x - this.x * v.w;
+    var k = this.x*v.y - this.y * v.x;
+
+    return new Vector3(i,j,k);
+}
+
 function Point2(x,y)
 {
     return new Vector3(x,y,1);
@@ -49,3 +64,7 @@ Matrix33.prototype.Transform= function(v)
     return new Vector3(x,y,w);
 }
 
+Matrix33.prototype.GetOrigin = function(tr)
+{
+    return Point2(this.data[2], this.data[5]);
+}

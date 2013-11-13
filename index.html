@@ -8,7 +8,7 @@
 <title>IK Solver</title>
 </head>
 <body>
-<canvas id="canvas" width="1000px" height="500px" /> 
+<canvas id="canvas" width="1000px" height="600px" /> 
 <script type="text/javascript">
 var renderer;
 var joints = [];
@@ -23,6 +23,7 @@ function init()
     var j2 = new Joint(MakeTransform(130,0,0));
 
     var b2 = new Bone(40,40, MakeTransform(-20,-20,0));
+    b2.effector = 0;
 
     var j3 = new Joint(MakeTransform(40, -15, -0.5));
     var j4 = new Joint(MakeTransform(40, 0, 0));
@@ -51,14 +52,19 @@ function init()
     joints.push(root);
     joints.push(j);
     joints.push(j2);
+    joints.push(j3);
+    joints.push(j4);
+    joints.push(j5);
 
     setInterval(tick, 1000.0/60);
 }
 
 function tick()
 {
-    joints[0].Rotate(0.01);
-    joints[2].Rotate(-0.05);
+    var target = Point2(100,100);
+    var s = joints[0].GetEffector(0, MakeTransform(0,0,0));
+    var J = [];
+    joints[0].BuildJacobian(J,s,MakeTransform(0,0,0));
     renderer.Update();
 }
 
