@@ -8,28 +8,44 @@
 <title>IK Solver</title>
 </head>
 <body>
-<canvas id="canvas" width="1000px" height="600px" /> 
+<canvas id="canvas" width="1000px" height="600px" onmousemove="onMouseMove()" /> 
 <script type="text/javascript">
 var renderer;
 var joints = [];
+
+function getMousePos(canvas, evt) 
+{
+}
+
+var target = Point2(300,300);
+
 function init()
 {
     var canvas = document.getElementById("canvas");
+    canvas.addEventListener('mousemove',  function onMouseMove(e)
+        {
+        var rect = canvas.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        target = Point2(x,y);
+        }, false);
+
+
     renderer = new Renderer(canvas);
     var root = new Joint(MakeTransform(400,300,Math.PI/3));
-    var b1 = new Bone(100, 50, MakeTransform(-10,-25,0));
+    var b1 = new Bone(100, 30, MakeTransform(-10,-15,0));
 
     var j = new Joint(MakeTransform(70,10,Math.PI/3));
-    var j2 = new Joint(MakeTransform(130,0,0));
+    var j2 = new Joint(MakeTransform(110,0,0));
 
     var b2 = new Bone(40,40, MakeTransform(-20,-20,0));
-    b2.effector = 0;
 
     var j3 = new Joint(MakeTransform(40, -15, -0.5));
     var j4 = new Joint(MakeTransform(40, 0, 0));
     var j5 = new Joint(MakeTransform(40, 15, 0.5));
 
     var b3 = new Bone(30, 15, MakeTransform( -7.5, -7.5, 0));
+    b3.effector = 0;
 
     root.AddChild(j);
     root.AddChild(b1);
@@ -39,12 +55,8 @@ function init()
 
     j2.AddChild(b2);
     j2.AddChild(j3);
-    j2.AddChild(j4);
-    j2.AddChild(j5);
 
     j3.AddChild(b3);
-    j4.AddChild(b3);
-    j5.AddChild(b3);
 
     renderer.AddShape(root);
 
@@ -59,12 +71,49 @@ function init()
     setInterval(tick, 1000.0/60);
 }
 
+
 function tick()
 {
-    var target = Point2(100,100);
-    var s = joints[0].GetEffector(0, MakeTransform(0,0,0));
-    var J = [];
-    joints[0].BuildJacobian(J,s,MakeTransform(0,0,0));
+    for(var step = 0; step<10; step++)
+    {
+        var s = joints[0].GetEffector(0, MakeTransform(0,0,0));
+        var e = target.Minus(s);
+        if(e.x*e.x + e.y*e.y < 0.1)
+        {
+            break
+        }
+
+        var J = [];
+        joints[0].BuildJacobian(J,s,MakeTransform(0,0,0));
+
+
+        //J^T e
+        //5_2 x 2_1
+        var E = [];
+        for(var i=0; i<J.length; i++)
+        {
+            var pt = J[i].Dot(e);
+            E.push(pt);
+        }
+        
+        //J J^T e
+        //2_5 x 5_1
+        var x = 0;
+        var y = 0;
+        for(var i=0; i<J.length; i++)
+        {
+            x += J[i].x * E[i];
+            y += J[i].y * E[i];
+        }
+
+        var alpha = (e.x * x + e.y * y) / (x *x + y * y);
+        
+        for(var i=0; i<E.length; i++)
+        {
+            joints[i].Rotate(E[i] * alpha);
+        }
+    }
+
     renderer.Update();
 }
 

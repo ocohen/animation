@@ -11,6 +11,11 @@ Vector3.prototype.Minus = function(v)
     return new Vector3(this.x - v.x, this.y - v.y, this.w - v.w);
 }
 
+Vector3.prototype.Dot = function(v)
+{
+    return this.x * v.x + this.y * v.y + this.w * v.w;
+}
+
 Vector3.prototype.Cross = function(v)
 {
     var i = this.y*v.w - this.w * v.y;
