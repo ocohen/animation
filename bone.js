@@ -36,7 +36,7 @@ Bone.prototype.Draw = function(context, tr)
     this.ApplyTransform(newTr);
 
     context.beginPath();
-    context.strokeStyle= "#000000";
+    context.strokeStyle= "#ffffff";
     context.moveTo(this.tl.x, this.tl.y);
     context.lineTo(this.tr.x, this.tr.y);
     context.lineTo(this.br.x, this.br.y);
